@@ -55,6 +55,21 @@ variable "single_nat_gateway" {
   default     = true
 }
 
+variable "vpn_client_cidr" {
+  description = "CIDR block to client VPN "
+  type        = string
+}
+
+variable "backend_container_port" {
+  type    = number
+  default = 8000
+}
+
+variable "frontend_container_port" {
+  type    = number
+  default = 3000
+}
+
 variable "tags" {
   description = "Common tags applied to all resource"
   type        = map(string)

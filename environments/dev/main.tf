@@ -14,3 +14,19 @@ module "networking" {
 
   tags = var.tags
 }
+
+module "security_groups" {
+  source = "../../modules/security-groups"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  vpc_id          = module.networking.vpc_id
+  vpn_client_cidr = var.vpn_client_cidr
+
+  frontend_container_port = var.frontend_container_port
+  backend_container_port  = var.backend_container_port
+
+  tags = var.tags
+
+}

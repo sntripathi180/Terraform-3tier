@@ -27,3 +27,36 @@ output "mgmt_subnet_ids" {
 output "nat_gateway_id" {
   value = module.networking.nat_gateway_ids
 }
+
+output "public_alb_sg_id" {
+  value = module.security_groups.public_alb_sg_id
+}
+
+output "internal_alb_sg_id" {
+  value = module.security_groups.internal_alb_sg_id
+}
+
+
+output "frontend_ecs_sg_id" {
+  value = module.security_groups.frontend_ecs_sg_id
+}
+
+output "backend_ecs_sg_id" {
+  value = module.security_groups.backend_ecs_sg_id
+}
+
+output "mysql_sg_id" {
+  value = module.security_groups.mysql_sg_id
+}
+
+output "postgres_sg_id" {
+  value = module.security_groups.postgres_sg_id
+}
+
+output "redis_sg_id" {
+  value = module.security_groups.redis_sg_id
+}
+
+output "management_sg_id" {
+  value = module.security_groups.management_sg_id
+}
