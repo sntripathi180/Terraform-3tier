@@ -60,6 +60,18 @@ variable "vpn_client_cidr" {
   type        = string
 }
 
+variable "ecr_repository_names" {
+  description = "Short names for ECR repos, [frontend, backend]"
+  type        = list(string)
+  default     = ["frontend", "backend"]
+}
+
+variable "ecr_max_image_count" {
+  description = "Max images to retain per ECR repo before oldest are auto-expired"
+  type        = number
+  default     = 10
+}
+
 variable "backend_container_port" {
   type    = number
   default = 8000
@@ -69,6 +81,8 @@ variable "frontend_container_port" {
   type    = number
   default = 3000
 }
+
+
 
 variable "tags" {
   description = "Common tags applied to all resource"

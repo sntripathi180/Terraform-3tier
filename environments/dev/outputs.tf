@@ -64,3 +64,7 @@ output "management_sg_id" {
 output "s3_bucket_id" {
   value = module.s3.bucket_id
 }
+
+output "ecr_repository_urls" {
+  value = module.ecr.repository_urls
+}

@@ -38,3 +38,13 @@ module "s3" {
 
   tags = var.tags
 }
+
+module "ecr" {
+  source           = "../../modules/ecr"
+  project_name     = var.project_name
+  environment      = var.environment
+  repository_names = var.ecr_repository_names
+  max_image_count  = var.ecr_max_image_count
+
+  tags = var.tags
+}
