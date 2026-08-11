@@ -48,3 +48,40 @@ module "ecr" {
 
   tags = var.tags
 }
+
+module "rds_mysql" {
+  source = "../../modules/rds"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  name           = "mysql"
+  engine         = "mysql"
+  engine_version = var.mysql_engine_version
+  port           = 3306
+  db_name        = var.mysql_db_name
+
+  subnet_ids             = module.networking.db_subnet_ids
+  vpc_security_group_ids = [module.security_groups.mysql_sg_id]
+
+  tags = var.tags
+
+}
+
+module "rds_postgres" {
+  source = "../../modules/rds"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  name           = "postgres"
+  engine         = "postgres"
+  engine_version = var.postgres_engine_version
+  port           = 5432
+  db_name        = var.postgres_db_name
+
+  subnet_ids             = module.networking.db_subnet_ids
+  vpc_security_group_ids = [module.security_groups.postgres_sg_id]
+
+  tags = var.tags
+}

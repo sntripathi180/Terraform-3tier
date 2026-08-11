@@ -72,6 +72,27 @@ variable "ecr_max_image_count" {
   default     = 10
 }
 
+variable "mysql_engine_version" {
+  type    = string
+  default = "8.0"
+}
+
+variable "mysql_db_name" {
+  type    = string
+  default = "myappdb"
+}
+
+variable "postgres_engine_version" {
+  type    = string
+  default = "16"
+}
+
+variable "postgres_db_name" {
+  type    = string
+  default = "myappdb"
+}
+
+
 variable "backend_container_port" {
   type    = number
   default = 8000

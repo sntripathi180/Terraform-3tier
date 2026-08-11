@@ -68,3 +68,22 @@ output "s3_bucket_id" {
 output "ecr_repository_urls" {
   value = module.ecr.repository_urls
 }
+
+output "mysql_endpoint" {
+  value = module.rds_mysql.endpoint
+}
+
+output "mysql_secret_arn" {
+  description = "Secrets Manager ARN with the auto-generated MySQL master credentials"
+  value       = module.rds_mysql.master_user_secret_arn
+}
+
+output "postgres_endpoint" {
+  value = module.rds_postgres.endpoint
+}
+
+output "postgres_secret_arn" {
+  description = "Secrets Manager ARN with the auto-generated PostgreSQL master credentials"
+  value       = module.rds_postgres.master_user_secret_arn
+}
+
