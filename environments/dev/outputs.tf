@@ -60,3 +60,7 @@ output "redis_sg_id" {
 output "management_sg_id" {
   value = module.security_groups.management_sg_id
 }
+
+output "s3_bucket_id" {
+  value = module.s3.bucket_id
+}

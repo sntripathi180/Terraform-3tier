@@ -28,5 +28,13 @@ module "security_groups" {
   backend_container_port  = var.backend_container_port
 
   tags = var.tags
+}
 
+module "s3" {
+  source        = "../../modules/s3"
+  project_name  = var.project_name
+  environment   = var.environment
+  bucket_suffix = "frontend-assets"
+
+  tags = var.tags
 }
