@@ -67,7 +67,7 @@ module "rds_mysql" {
   tags = var.tags
 
 }
-
+/* 
 module "rds_postgres" {
   source = "../../modules/rds"
 
@@ -82,6 +82,20 @@ module "rds_postgres" {
 
   subnet_ids             = module.networking.db_subnet_ids
   vpc_security_group_ids = [module.security_groups.postgres_sg_id]
+
+  tags = var.tags
+}
+
+*/
+
+module "elasticache_redis" {
+  source = "../../modules/elasticache"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  subnet_ids             = module.networking.db_subnet_ids
+  vpc_security_group_ids = [module.security_groups.redis_sg_id]
 
   tags = var.tags
 }
