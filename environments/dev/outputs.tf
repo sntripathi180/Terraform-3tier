@@ -94,9 +94,23 @@ output "redis_endpoint" {
 
 
 output "public_alb_dns_name" {
- value       = module.alb_public.lb_dns_name
+  value = module.alb_public.lb_dns_name
 }
 
 output "internal_alb_dns_name" {
-  value       = module.alb_internal.lb_dns_name
+  value = module.alb_internal.lb_dns_name
 }
+
+output "ecs_cluster_name" {
+  value = module.ecs_cluster.cluster_name
+}
+
+
+output "frontend_service_name" {
+  value = module.ecs_service_frontend.service_name
+}
+
+output "backend_service_name" {
+  value = module.ecs_service_backend.service_name
+}
+

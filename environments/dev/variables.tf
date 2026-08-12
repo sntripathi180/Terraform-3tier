@@ -116,6 +116,49 @@ variable "backend_health_check_path" {
 }
 
 
+variable "ecs_instance_type" {
+  description = "t3.micro/t2.micro are free-tier eligible"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "ecs_asg_min_size" {
+  type    = number
+  default = 1
+}
+
+variable "ecs_asg_max_size" {
+  type    = number
+  default = 2
+}
+
+variable "ecs_asg_desired_capacity" {
+  type    = number
+  default = 1
+}
+
+variable "frontend_image_tag" {
+  description = "Tag to deploy for the frontend image. Push an image to ECR before applying, or the task will fail to start."
+  type        = string
+  default     = "latest"
+}
+
+variable "backend_image_tag" {
+  type    = string
+  default = "latest"
+}
+
+variable "frontend_desired_count" {
+  type    = number
+  default = 1
+}
+
+variable "backend_desired_count" {
+  type    = number
+  default = 1
+}
+
+
 variable "tags" {
   description = "Common tags applied to all resource"
   type        = map(string)

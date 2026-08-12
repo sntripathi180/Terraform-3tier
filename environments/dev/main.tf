@@ -123,11 +123,11 @@ module "alb_public" {
   name         = "public"
   internal     = false
 
-  vpc_id              = module.networking.vpc_id
-  subnet_ids          = module.networking.public_subnet_ids
-  security_group_ids  = [module.security_groups.public_alb_sg_id]
-  target_port         = var.frontend_container_port
-  health_check_path   = var.frontend_health_check_path
+  vpc_id             = module.networking.vpc_id
+  subnet_ids         = module.networking.public_subnet_ids
+  security_group_ids = [module.security_groups.public_alb_sg_id]
+  target_port        = var.frontend_container_port
+  health_check_path  = var.frontend_health_check_path
 
   tags = var.tags
 }
@@ -140,11 +140,100 @@ module "alb_internal" {
   name         = "internal"
   internal     = true
 
-  vpc_id      = module.networking.vpc_id
-  subnet_ids          = module.networking.backend_subnet_ids
-  security_group_ids  = [module.security_groups.internal_alb_sg_id]
-  target_port         = var.backend_container_port
-  health_check_path   = var.backend_health_check_path
+  vpc_id             = module.networking.vpc_id
+  subnet_ids         = module.networking.backend_subnet_ids
+  security_group_ids = [module.security_groups.internal_alb_sg_id]
+  target_port        = var.backend_container_port
+  health_check_path  = var.backend_health_check_path
 
   tags = var.tags
 }
+
+
+module "ecs_cluster" {
+  source = "../../modules/ecs-cluster"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  instance_subnet_ids        = concat(module.networking.frontend_subnet_ids, module.networking.backend_subnet_ids)
+  instance_security_group_id = module.security_groups.ecs_instances_sg_id
+  instance_profile_name      = module.iam_ecs.instance_profile_name
+
+  instance_type    = var.ecs_instance_type
+  min_size         = var.ecs_asg_min_size
+  max_size         = var.ecs_asg_max_size
+  desired_capacity = var.ecs_asg_desired_capacity
+
+  tags = var.tags
+}
+
+
+module "ecs_service_frontend" {
+  source = "../../modules/ecs-service"
+
+  project_name = var.project_name
+  environment  = var.environment
+  name         = "frontend"
+
+  cluster_name           = module.ecs_cluster.cluster_name
+  capacity_provider_name = module.ecs_cluster.capacity_provider_name
+
+  container_image = "${module.ecr.repository_urls["frontend"]}:${var.frontend_image_tag}"
+  container_port  = var.frontend_container_port
+  desired_count   = var.frontend_desired_count
+
+  subnet_ids         = module.networking.frontend_subnet_ids
+  security_group_ids = [module.security_groups.frontend_ecs_sg_id]
+  target_group_arn   = module.alb_public.target_group_arn
+
+  execution_role_arn = module.iam_ecs.task_execution_role_arn
+  task_role_arn      = module.iam_ecs.frontend_task_role_arn
+
+  environment_variables = {
+    BACKEND_INTERNAL_URL = "http://${module.alb_internal.lb_dns_name}"
+  }
+
+  tags = var.tags
+}
+
+module "ecs_service_backend" {
+  source = "../../modules/ecs-service"
+
+  project_name = var.project_name
+  environment  = var.environment
+  name         = "backend"
+
+  cluster_name           = module.ecs_cluster.cluster_name
+  capacity_provider_name = module.ecs_cluster.capacity_provider_name
+
+  container_image = "${module.ecr.repository_urls["backend"]}:${var.backend_image_tag}"
+  container_port  = var.backend_container_port
+  desired_count   = var.backend_desired_count
+
+  subnet_ids         = module.networking.backend_subnet_ids
+  security_group_ids = [module.security_groups.backend_ecs_sg_id]
+  target_group_arn   = module.alb_internal.target_group_arn
+
+  execution_role_arn = module.iam_ecs.task_execution_role_arn
+  task_role_arn      = module.iam_ecs.backend_task_role_arn
+
+  environment_variables = {
+    MYSQL_HOST    = module.rds_mysql.address
+    MYSQL_PORT    = tostring(module.rds_mysql.port)
+    MYSQL_DB_NAME = module.rds_mysql.db_name
+    /*
+    POSTGRES_HOST    = module.rds_postgres.address
+    POSTGRES_PORT    = tostring(module.rds_postgres.port)
+    POSTGRES_DB_NAME = module.rds_postgres.db_name
+*/
+    REDIS_HOST = module.elasticache_redis.endpoint
+    REDIS_PORT = tostring(module.elasticache_redis.port)
+
+    MYSQL_SECRET_ARN = module.rds_mysql.master_user_secret_arn
+    # POSTGRES_SECRET_ARN = module.rds_postgres.master_user_secret_arn
+  }
+
+  tags = var.tags
+}
+
