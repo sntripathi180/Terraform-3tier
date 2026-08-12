@@ -90,3 +90,13 @@ output "postgres_secret_arn" {
 output "redis_endpoint" {
   value = module.elasticache_redis.endpoint
 }
+
+
+
+output "public_alb_dns_name" {
+ value       = module.alb_public.lb_dns_name
+}
+
+output "internal_alb_dns_name" {
+  value       = module.alb_internal.lb_dns_name
+}

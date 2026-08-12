@@ -104,6 +104,17 @@ variable "frontend_container_port" {
 }
 
 
+variable "frontend_health_check_path" {
+  type    = string
+  default = "/"
+}
+
+variable "backend_health_check_path" {
+  description = "Your backend app needs to implement this endpoint and return 200"
+  type        = string
+  default     = "/health"
+}
+
 
 variable "tags" {
   description = "Common tags applied to all resource"

@@ -99,3 +99,52 @@ module "elasticache_redis" {
 
   tags = var.tags
 }
+
+module "iam_ecs" {
+  source = "../../modules/iam-ecs"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  backend_secret_arns = [
+    module.rds_mysql.master_user_secret_arn,
+    # module.rds_postgres.master_user_secret_arn,
+  ]
+
+  tags = var.tags
+}
+
+
+module "alb_public" {
+  source = "../../modules/alb"
+
+  project_name = var.project_name
+  environment  = var.environment
+  name         = "public"
+  internal     = false
+
+  vpc_id              = module.networking.vpc_id
+  subnet_ids          = module.networking.public_subnet_ids
+  security_group_ids  = [module.security_groups.public_alb_sg_id]
+  target_port         = var.frontend_container_port
+  health_check_path   = var.frontend_health_check_path
+
+  tags = var.tags
+}
+
+module "alb_internal" {
+  source = "../../modules/alb"
+
+  project_name = var.project_name
+  environment  = var.environment
+  name         = "internal"
+  internal     = true
+
+  vpc_id      = module.networking.vpc_id
+  subnet_ids          = module.networking.backend_subnet_ids
+  security_group_ids  = [module.security_groups.internal_alb_sg_id]
+  target_port         = var.backend_container_port
+  health_check_path   = var.backend_health_check_path
+
+  tags = var.tags
+}
