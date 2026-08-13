@@ -41,3 +41,6 @@ terraform.rc
 Thumbs.db
 .vscode/
 .idea/
+
+# Generated VPN certificates and private keys
+generated-vpn-certs/

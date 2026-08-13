@@ -114,3 +114,19 @@ output "backend_service_name" {
   value = module.ecs_service_backend.service_name
 }
 
+
+output "vpn_endpoint_id" {
+  value = module.vpn.endpoint_id
+}
+
+output "vpn_client_cert_paths" {
+  value = module.vpn.client_cert_paths
+}
+
+output "vpn_ovpn_export_command" {
+  value = module.vpn.ovpn_export_command
+}
+
+output "private_dns_zone" {
+  value = module.route53_private.domain_name
+}

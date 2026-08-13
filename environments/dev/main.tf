@@ -264,3 +264,17 @@ module "vpn" {
   tags = var.tags
 }
 
+module "route53_private" {
+  source = "../../modules/route53-private"
+
+  domain_name = var.private_domain_name
+  vpc_id      = module.networking.vpc_id
+
+  records = {
+    api = module.alb_internal.lb_dns_name
+  }
+
+
+
+  tags = var.tags
+}
