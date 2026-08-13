@@ -164,3 +164,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+
+variable "vpn_client_names" {
+  description = "One VPN client certificate is generated per name - add your team's usernames here"
+  type        = list(string)
+  default     = ["admin"]
+}
+
+variable "private_domain_name" {
+  type    = string
+  default = "internal.myapp.local"
+}

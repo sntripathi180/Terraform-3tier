@@ -237,3 +237,30 @@ module "ecs_service_backend" {
   tags = var.tags
 }
 
+
+module "vpn" {
+  source = "../../modules/vpn"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  vpc_id          = module.networking.vpc_id
+  vpc_cidr        = var.vpc_cidr
+  vpn_client_cidr = var.vpn_client_cidr
+
+  security_group_id = module.security_groups.vpn_sg_id
+
+  associated_subnet_ids = [module.networking.backend_subnet_ids[0]]
+
+  additional_route_cidrs = concat(
+    var.frontend_subnet_cidrs,
+    [var.backend_subnet_cidrs[1]],
+    var.db_subnet_cidrs,
+    var.mgmt_subnet_cidrs,
+  )
+
+  client_names = var.vpn_client_names
+
+  tags = var.tags
+}
+
